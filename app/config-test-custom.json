@@ -1,0 +1,96 @@
+{
+  "topicConfig": [
+    {
+      "topic": "/carla/ego_vehicle/odometry",
+      "type": "nav_msgs/Odometry",
+      "converter": "SensorOdometry",
+      "config": {
+        "xvizStream": "/vehicle_pose"
+      }
+    },
+    {
+      "topic": "/carla/ego_vehicle/vehicle_status",
+      "type": "carla_msgs/CarlaEgoVehicleStatus",
+      "converter": "SensorVelAcc",
+      "config": {
+        "frameId": "map",
+        "xvizStream": "/vehicle/velocity"
+      }
+    },
+    {
+      "topic": "/carla/ego_vehicle/camera/rgb/spectator_view/image_color",
+      "type": "sensor_msgs/Image",
+      "config": {
+        "xvizStream": "/carla/ego_vehicle/camera/spectator_view"
+      }
+    },
+    {
+      "topic": "/carla/ego_vehicle/camera/semantic_segmentation/front/image_segmentation",
+      "type": "sensor_msgs/Image",
+      "config": {
+        "xvizStream": "/carla/ego_vehicle/camera/front_view"
+      }
+    },
+    {
+      "topic": "/decided_trajectory_path",
+      "type": "nav_msgs/Path",
+      "converter": "NavPathDecided",
+      "config": {
+        "xvizStream": "/vehicle/nav_path_decided"
+      }
+    },
+    {
+      "topic": "/mpc_follower_node/debug/filtered_traj",
+      "type": "visualization_msgs/Marker",
+      "converter": "NavPathFilteredMarker"
+    },
+    {
+      "topic": "/carla/ego_vehicle/ego_waypoints_forward",
+      "type": "nav_msgs/Path",
+      "converter": "NavPathForward",
+      "config": {
+        "xvizStream": "/vehicle/nav_path_forward"
+      }
+    },
+    {
+      "topic": "/carla/ego_vehicle/ego_waypoints_backwards",
+      "type": "nav_msgs/Path",
+      "converter": "NavPathBackward",
+      "config": {
+        "xvizStream": "/vehicle/nav_path_backward"
+      }
+    },
+    {
+      "topic": "/carla/ego_vehicle/waypoints",
+      "type": "nav_msgs/Path",
+      "converter": "NavPath",
+      "config": {
+        "xvizStream": "/vehicle/nav_path"
+      }
+    },
+    {
+      "topic": "/carla/vehicle/217/odometry",
+      "type": "nav_msgs/Odometry",
+      "converter": "TrackletsConverter",
+      "config": {
+        "xvizStream": "/tracklets/objects"
+      }
+    },
+    {
+      "topic": "/carla/vehicle/217/odometry",
+      "type": "nav_msgs/Odometry",
+      "converter": "TrackletsConverter",
+      "config": {
+        "xvizStream": "/tracklets/tracking_points"
+      }
+    },
+    {
+      "topic": "/carla/vehicle/217/odometry",
+      "type": "nav_msgs/Odometry",
+      "converter": "TrackletsConverter",
+      "config": {
+        "xvizStream": "/tracklets/labels"
+      }
+    }
+  ]
+}
