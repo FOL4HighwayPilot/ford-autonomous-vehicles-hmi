@@ -32,11 +32,12 @@ body {
 }
 #hud {
   position: fixed;
-  width: 285px;
-  height: 165px;
+  width: 125px;
+  height: 640px;
   left: 300;
   top: 10;
-  flex-direction: row;
+  flex-direction: column;
+
 }
 #toolbar {
   position: fixed;

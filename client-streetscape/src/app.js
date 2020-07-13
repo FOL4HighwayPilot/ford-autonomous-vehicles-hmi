@@ -26,6 +26,7 @@ import {ThemeProvider, Form} from '@streetscape.gl/monochrome';
 import MapView from './map-view';
 import {UI_THEME, LOG_VIEWER_STYLE} from './custom-styles'
 import './stylesheets/main.scss';
+import HUD from './hud';
 
 import {setXVIZConfig, getXVIZConfig} from '@xviz/parser';
 import {default as XVIZLoaderFactory} from './log-from-factory';
@@ -280,26 +281,7 @@ class Example extends PureComponent {
               formatTimestamp={x => new Date(x * TIMEFORMAT_SCALE).toUTCString()}
             />
           </div>
-          <div id="hud">
-              <MeterWidget
-                log={log}
-                streamName="/vehicle/acceleration"
-                label="Acceleration"
-                min={-4}
-                max={4}
-              />
-              <hr />
-              <hr />
-              <hr />
-              <MeterWidget
-                log={log}
-                streamName="/vehicle/velocity"
-                label="Speed"
-                getWarning={x => (x > 6 ? 'FAST' : '')}
-                min={0}
-                max={20}
-              />
-        </div>
+          <HUD log={log} />
       </div>
     );
   }

@@ -54,7 +54,7 @@ export class TrackletsConverter extends Converter {
                 [pos[0]-1, pos[1]+2, pos[2]], 
                 [pos[0]+1, pos[1]+2, pos[2]], 
                 [pos[0]+1, pos[1]-2, pos[2]]])
-      .classes('Car')
+      .classes(['Car'])
       .style({
         height: 2
       })

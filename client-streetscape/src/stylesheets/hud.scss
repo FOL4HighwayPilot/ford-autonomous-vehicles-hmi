@@ -14,10 +14,23 @@
     }
   
     .autonomy-state {
-      font-size: 12px;
+      font-size: 14px;
       width: 92px;
       text-align: center;
       text-transform: capitalize;
       padding: 4px 0;
+    }
+    .behavior-state {
+      font-size: 14px;
+      width: 92px;
+      text-align: center;
+      text-transform: capitalize;
+      padding: 4px 0;
+    }
+    .wheel-image {
+      height: 94px;
+      width: 94px;
+      align-self: center;
+      padding-top: 7px;
     }
   }

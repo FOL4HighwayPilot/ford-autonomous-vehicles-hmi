@@ -3,8 +3,10 @@ import {serverArgs} from '@xviz/server';
 import {convertArgs, ROSBag, registerROSBagProvider} from '@xviz/ros';
 
 import {SensorImage} from './messages/image-converter';
-import {SensorVelAcc} from './messages/vehicle-status-converter';
+import {SensorVelAccSteer} from './messages/vehicle-status-converter';
 import {SensorOdometry} from './messages/odometry-converter';
+import {SensorTurnSignal} from './messages/turn-signal-converter';
+import {SensorBehaviorState} from './messages/behavior-state-converter';
 import {NavPathForward, NavPathBackward, NavPath, NavPathDecided, NavPathFilteredMarker} from './messages/waypoints-converter';
 import {TrackletsConverter} from './messages/tracklets-converter'
 
@@ -49,8 +51,15 @@ export class CarlaBag extends ROSBag {
       description: 'The acceleration of the vehicle'
     });
 
+    const metricSteer = ui.metric({
+      streams: ['/vehicle/wheel_angle'],
+      title: 'Steering Angle',
+      description: 'The steering angle of the wheels'
+    });
+
     chart_panel.child(metricVel);
     chart_panel.child(metricAcc);
+    chart_panel.child(metricSteer)
 
 
     ui.child(cam_panel);
@@ -63,7 +72,9 @@ export class CarlaBag extends ROSBag {
 // Setup ROS Provider
 function setupROSProvider(args) {
   if (args.rosConfig) {
-    const converters = [SensorOdometry, SensorVelAcc, SensorImage, TrackletsConverter, NavPathDecided, NavPathFilteredMarker];
+    const converters = [SensorOdometry, SensorBehaviorState, SensorTurnSignal, 
+                        SensorVelAccSteer, SensorImage, TrackletsConverter, 
+                        NavPathDecided, NavPathFilteredMarker];
     registerROSBagProvider(args.rosConfig, {converters, BagClass: CarlaBag});
   }
 }

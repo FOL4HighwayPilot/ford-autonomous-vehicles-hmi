@@ -11,10 +11,26 @@
     {
       "topic": "/carla/ego_vehicle/vehicle_status",
       "type": "carla_msgs/CarlaEgoVehicleStatus",
-      "converter": "SensorVelAcc",
+      "converter": "SensorVelAccSteer",
       "config": {
         "frameId": "map",
         "xvizStream": "/vehicle/velocity"
+      }
+    },
+    {
+      "topic": "/lane_change",
+      "type": "std_msgs/String",
+      "converter": "SensorTurnSignal",
+      "config": {
+        "xvizStream": "/vehicle/turn_signal"
+      }
+    },
+    {
+      "topic": "/behavior_state",
+      "type": "std_msgs/String",
+      "converter": "SensorBehaviorState",
+      "config": {
+        "xvizStream": "/vehicle/behavior_state"
       }
     },
     {
