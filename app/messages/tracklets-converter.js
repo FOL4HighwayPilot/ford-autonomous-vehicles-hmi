@@ -50,10 +50,7 @@ export class TrackletsConverter extends Converter {
 
     xvizBuilder
       .primitive('/tracklets/objects')
-      .polygon([[pos[0]-1, pos[1]-2, pos[2]], 
-                [pos[0]-1, pos[1]+2, pos[2]], 
-                [pos[0]+1, pos[1]+2, pos[2]], 
-                [pos[0]+1, pos[1]-2, pos[2]]])
+      .polygon([pos[0], pos[1], pos[2]])
       .classes(['Car'])
       .style({
         height: 2
