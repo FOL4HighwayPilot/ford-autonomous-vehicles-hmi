@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {_BaseWidget as BaseWidget, MeterWidget} from 'streetscape.gl';
 
-const wheelImageLocation = "../assets/wheel3.png";
+const wheelImageLocation = "../assets/wheel.png";
 
 const WHEEL_WIDGET_STYLE = {
     arcRadius: 0,

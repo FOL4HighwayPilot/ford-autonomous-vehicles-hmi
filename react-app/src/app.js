@@ -209,7 +209,7 @@ class Example extends PureComponent {
         </div>
 
         <div id="log-panel">
-          <div id="map-view">
+          <div id="map-view" style={{paddingLeft: 400}}>
             <MapView log={log} settings={settings} onSettingsChange={this._onSettingsChange} />
           </div>
         </div>

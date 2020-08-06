@@ -24,6 +24,9 @@ import {MAPBOX_TOKEN, MAP_STYLE, CAR, TRUCK} from './constants';
 import {XVIZ_STYLE, LOG_VIEWER_STYLE} from './custom-styles';
 import {FaCar, FaBicycle, FaWalking, FaBus} from "react-icons/fa";
 import {SimpleMeshLayer} from '@deck.gl/mesh-layers';
+//import {LaneLayer} from './map-layers/lane-layer';
+import {SignLayer, TrafficLightLayer, LaneLayer} from '@streetscape.gl/layers';
+import {COORDINATE_SYSTEM} from '@deck.gl/core';
 
 
 const OBJECT_ICONS = {
@@ -33,13 +36,11 @@ const OBJECT_ICONS = {
   Cyclist: FaBicycle
 };
 
-const VIEW_STATE = {
-    longitude: -122.39995,
-    latitude: 37.80001,
-    zoom: 22,
-    pitch: 0,
-    bearing: 0
-}
+const COLORS = {
+  yellow: [255, 255, 0],
+  white: [255, 255, 255],
+  none: [0, 0, 0, 0]
+};
 
 //*************************************************************************/
 
@@ -99,34 +100,74 @@ const customLayers = [
     // log-related options
     streamName: '/tracklets/objects',
     coordinate: 'VEHICLE_RELATIVE'
+  }),
+
+  new LaneLayer({
+    id: 'lanes',
+    coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
+    coordinateOrigin: [29.0081, 41.0465],
+
+    data: [
+      {
+        path: [
+          [0, 0, 0],
+          [2, 1, 0],
+          [3, 3, 0],
+          [3.05, 3, 0],
+          [3.05, 3.05, 0],
+          [3.1, 3.05, 0],
+          [3.1, 3.1, 0],
+          [3.15, 3.1, 0],
+          [3.15, 3.15, 0],
+          [3.2, 3.15, 0],
+          [3.2, 3.2, 0],
+          [5, 4, 0],
+          [7, 2.4, 0],
+          [7, 0, 0],
+          [10, -1, 0]
+        ]
+      }
+    ],
+
+    highPrecisionDash: true,
+
+    getPath: d => d.path,
+    getColor: [80, 200, 0],
+    getColor2: [0, 128, 255],
+    getWidth: [0.1, 0.05, 0.05],
+    getDashArray: [4, 1, 1, 1]
+  }),
+
+  new TrafficLightLayer({
+    id: 'traffic-lights',
+    coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
+    coordinateOrigin: [29.008, 41.0465],
+
+    data: [
+      {position: [0, 0, 1], angle: 70, color: 'red'},
+      {position: [0, 0, 0.5], angle: 70, color: 'yellow'},
+      {position: [0, 0, 0], angle: 70, color: 'green'},
+      {position: [0, 0, -0.5], angle: 70, color: 'red', shape: 'left_arrow'},
+      {position: [0, 0, -1], angle: 70, color: 'red', shape: 'right_arrow'}
+    ],
+
+    getPosition: d => d.position,
+    getShape: d => d.shape || 'circular',
+    getColor: d => d.color,
+    getAngle: d => (d.angle / 180) * Math.PI,
+    getState: 1
   })
 ];
 
 //*************************************************************************/
 
 export default class MapView extends PureComponent {
-  /* FOR CUSTOM 3D LAYER
   state = {
-    mapGeoJsonUrl: null
+    viewState: {altitude: 1.5, bearing: -180, height: 603, latitude: 41.045199, longitude: 29.008258, 
+          maxPitch: 85, maxZoom: 24, minPitch: 0, minZoom: 12, pitch: 60, transitionDuration: 0, width: 1920, zoom: 21},
+    //{longitude: 29.008258, latitude: 41.045199, zoom: 20, pitch: 60, bearing: -180},
+    viewOffset: {x: 0, y: 250, bearing: 0}
   };
-
-  componentDidMount() {
-    // Attach event listener when new log data arrives
-    this.props.log.on('update', this._onDataUpdate);
-  }
-
-  componentWillUnmount() {
-    // Remove event listener
-    this.props.log.off('update', this._onDataUpdate);
-  }
-
-  _onDataUpdate() {
-    const frame = this.props.log.getCurrentFrame();
-    // `getChunkIdFromLngLat` is a utility that returns the internal map id from [longitude, latitude]
-    const chunkId = getChunkIdFromLngLat(frame.trackPosition);
-    this.setState({mapGeoJsonUrl: `http://our.map.service/?chunk=${chunkId}`});
-  }
-  */
 
   _onViewStateChange = ({viewOffset}) => {
     this.props.onSettingsChange({viewOffset});
@@ -136,11 +177,16 @@ export default class MapView extends PureComponent {
     // This prevents LogViewer from generating the default layer for this stream
     return streamName !== '/tracklets/objects';
   }
-  
+  /*
+  componentWillMount() {
+    console.log("HEEY")
+    this.recenterCamera();
+  }
+  */
   render() {
     const {log, settings} = this.props;
 
-    return (
+    return (  
       <LogViewer
         log={log}
         mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -149,12 +195,14 @@ export default class MapView extends PureComponent {
         xvizStyles={XVIZ_STYLE}
         style={LOG_VIEWER_STYLE}
         showTooltip={settings.showTooltip}
+
+        viewState={this.state.viewState}
+        viewOffset={this.state.viewOffset}
+        onViewStateChange={({viewState, viewOffset}) => this.setState({viewState, viewOffset})}
+
         viewMode={VIEW_MODE[settings.viewMode]}
         //viewState={VIEW_STATE}
-        style={LOG_VIEWER_STYLE}
-        viewOffset={settings.viewOffset}
-        //viewOffset={{x: -10, y: -10, bearing: 0}}
-        onViewStateChange={this._onViewStateChange}
+        //onViewStateChange={this._onViewStateChange}
         renderObjectLabel={renderObjectLabel}
         customLayers={customLayers}
         streamFilter={this.streamFilter}

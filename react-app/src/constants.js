@@ -43,10 +43,9 @@ export const CAR = CarMesh.sedan({
 
 
 export const TRUCK = {
-  mesh: load('./assets/truck.obj', OBJLoader),
+  mesh: load('./assets/truckFMAX.obj', OBJLoader),
   origin: [1.08, -0.05, 0],
   scale: 0.009,
-  //scale: 0.9,
   wireframe: false,
   color: [19, 58, 124]
 };

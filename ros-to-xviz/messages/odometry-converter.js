@@ -51,7 +51,7 @@ export class SensorOdometry extends Converter {
     xvizBuilder
       .pose('/vehicle_pose')
       .timestamp(TimeUtil.toDate(timestamp).getTime() / 1e3)
-      .mapOrigin(29.008258, 41.045199, 40)
+      .mapOrigin(29.008258, 41.045199, 0)
       .orientation(roll, pitch, yaw)
       .position(pos[0], pos[1], pos[2]);
   }
