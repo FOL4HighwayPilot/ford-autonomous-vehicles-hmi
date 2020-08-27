@@ -28,6 +28,10 @@ import {SimpleMeshLayer} from '@deck.gl/mesh-layers';
 import {SignLayer, TrafficLightLayer, LaneLayer} from '@streetscape.gl/layers';
 import {COORDINATE_SYSTEM} from '@deck.gl/core';
 
+var myData = [];
+getxml();
+console.log("hey");
+console.log(myData);
 
 const OBJECT_ICONS = {
   Car: FaCar,
@@ -41,6 +45,41 @@ const COLORS = {
   white: [255, 255, 255],
   none: [0, 0, 0, 0]
 };
+
+//*************************************************************************/
+
+function getxml() {
+  const xml_string = require('./output_file.xml');
+
+  const xml2js = require('xml2js');
+  const parser = new xml2js.Parser({ attrkey: "ATTR" });
+
+  parser.parseString(xml_string, function(error, result) {
+      if(error === null) {
+          for (var i = 0; i < 300; i++) {
+            var path = [];
+            for (var j = 0; j < result.commonRoad.lanelet[i].leftBound[0].point.length; j++) {
+              path.push([parseFloat(result.commonRoad.lanelet[i].leftBound[0].point[j].x[0])/1, 
+                      parseFloat(result.commonRoad.lanelet[i].leftBound[0].point[j].y[0])/1,
+                      0])
+            }
+            myData.push({path});
+          }
+          for (var i = 0; i < 300; i++) {
+            var path = [];
+            for (var j = 0; j < result.commonRoad.lanelet[i].rightBound[0].point.length; j++) {
+              path.push([parseFloat(result.commonRoad.lanelet[i].rightBound[0].point[j].x[0])/1, 
+                      parseFloat(result.commonRoad.lanelet[i].rightBound[0].point[j].y[0])/1,
+                      0])
+            }
+            myData.push({path});
+          }
+      }
+      else {
+          console.log(error);
+      }
+  });
+}
 
 //*************************************************************************/
 
@@ -85,6 +124,26 @@ const renderObjectLabel = ({id, object, isSelected}) => {
 
 //*************************************************************************/
 
+const signLayerProps = {
+  coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
+  coordinateOrigin: [7.99972, 49.0013],
+
+  //coordinate: 'VEHICLE_RELATIVE',
+
+  iconAtlas: './assets/speed-limit-110-sign.png',
+  iconMapping: {
+    stop: {x: 0, y: 0, width: 256, height: 256}
+  },
+  data: [
+    {position: [-1, 1, 1], angle: 90}
+  ],
+  sizeScale: 2,
+
+  getAngle: d => (d.angle / 180) * Math.PI,
+  getIcon: d => 'stop',
+  getSize: 1
+};
+
 const customLayers = [
   new SimpleMeshLayer({
     id: 'custom-objectModels',
@@ -104,34 +163,13 @@ const customLayers = [
 
   new LaneLayer({
     id: 'lanes',
-    coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
-    coordinateOrigin: [29.0081, 41.0465],
+    coordinate: COORDINATE_SYSTEM.METER_OFFSETS,
+    coordinateOrigin: [8, 49],
+    //coordinateOrigin: [29.0081, 41.0465],
 
-    data: [
-      {
-        path: [
-          [0, 0, 0],
-          [2, 1, 0],
-          [3, 3, 0],
-          [3.05, 3, 0],
-          [3.05, 3.05, 0],
-          [3.1, 3.05, 0],
-          [3.1, 3.1, 0],
-          [3.15, 3.1, 0],
-          [3.15, 3.15, 0],
-          [3.2, 3.15, 0],
-          [3.2, 3.2, 0],
-          [5, 4, 0],
-          [7, 2.4, 0],
-          [7, 0, 0],
-          [10, -1, 0]
-        ]
-      }
-    ],
+    data: myData,
 
-    highPrecisionDash: true,
-
-    getPath: d => d.path,
+    getPath: d => {console.log(d.path); return d.path;},
     getColor: [80, 200, 0],
     getColor2: [0, 128, 255],
     getWidth: [0.1, 0.05, 0.05],
@@ -141,7 +179,8 @@ const customLayers = [
   new TrafficLightLayer({
     id: 'traffic-lights',
     coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
-    coordinateOrigin: [29.008, 41.0465],
+    coordinateOrigin: [7.9997, 49.0011],
+    //coordinateOrigin: [29.008, 41.0465],
 
     data: [
       {position: [0, 0, 1], angle: 70, color: 'red'},
@@ -156,7 +195,14 @@ const customLayers = [
     getColor: d => d.color,
     getAngle: d => (d.angle / 180) * Math.PI,
     getState: 1
-  })
+  }),
+
+  new SignLayer({
+    ...signLayerProps,
+    id: 'sign-3d',
+    render3D: true,
+    getPosition: d => d.position
+  }),
 ];
 
 //*************************************************************************/
