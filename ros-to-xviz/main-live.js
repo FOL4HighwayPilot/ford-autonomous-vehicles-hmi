@@ -74,7 +74,7 @@ function main() {
     const message = xvizBuilder.getMessage();
     console.log(JSON.stringify(message, null, 2));
   });
-  /*
+  /* // GETTING THE ODOMETRY DATA OF VEHICLE 217 FROM ROS
   const sub2 = nh.subscribe('/carla/vehicle/217/odometry', 'nav_msgs/Odometry', (msg) => {
 
     var {
