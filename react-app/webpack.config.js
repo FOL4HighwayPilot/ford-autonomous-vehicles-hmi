@@ -80,7 +80,11 @@ const CONFIG = {
         options: {
           name: '[path][name].[hash].[ext]',
         },
-    }
+    },
+    {
+        test: /\.xml$/i,
+        use: 'raw-loader',
+     }
     ]
   },
   plugins: [
